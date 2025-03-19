@@ -2,23 +2,33 @@ package main
 
 import "fmt"
 
-func main() {
-	ints := []int{1, 2, 3}
-
-	bigInts := []int64{1, 2, 3, 4, 5}
-
-	sum := Sums(ints)
-	bigSum := Sums(bigInts)
-
-	fmt.Printf("Sum ints: %d\n", sum)
-	fmt.Printf("Sum bigs: %d", bigSum)
+var cache = map[int]int{
+	0: 0,
+	1: 1,
+	2: 1,
 }
 
-func Sums[T int64 | int](items []T) T {
-	var sum T
-	for _, v := range items {
-		sum += v
+var called = 0
+
+func main() {
+	fib := Fib(100)
+
+	fmt.Printf("result: %d\nCalled: %d", fib, called)
+}
+
+func Fib(depth int) int {
+	d, found := cache[depth]
+
+	if found {
+		called += 1
+		return d
 	}
 
-	return sum
+	var1 := Fib(depth - 1)
+	var2 := Fib(depth - 2)
+
+	cache[depth-1] = var1
+	cache[depth-2] = var2
+
+	return var1 + var2
 }
